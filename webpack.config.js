@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { VueLoaderPlugin } = require("vue-loader/dist/index");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const webpack = require('webpack')
 
 module.exports = {  
   mode: 'development',
@@ -72,6 +73,7 @@ module.exports = {
 
   resolve: {
     alias: {
+      "@": path.resolve(__dirname, './src'),
       "@images": path.resolve(__dirname, './src/assets/images')
     },
     extensions: [".js", '.vue']
@@ -88,6 +90,11 @@ module.exports = {
     // 使用 MiniCssExtractPlugin 插件将css抽离出来成为一个文件 在html中使用link来引入
     new MiniCssExtractPlugin({
       filename: "assets/styles/[contenthash].css"
-    })
+    }),
+
+    new webpack.DefinePlugin({
+      __VUE_OPTIONS_API__: false,
+      __VUE_PROD_DEVTOOLS__: false,
+    }),
   ]
 }
