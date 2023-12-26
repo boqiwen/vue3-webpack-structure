@@ -2,9 +2,11 @@ const path = require('path');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { VueLoaderPlugin } = require("vue-loader/dist/index");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const webpack = require('webpack')
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const webpack = require('webpack');
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 
-module.exports = {  
+module.exports = {
   mode: 'development',
 
   // 入口
@@ -79,6 +81,12 @@ module.exports = {
     extensions: [".js", '.vue']
   },
 
+  optimization: {
+    minimizer: [
+      new CssMinimizerPlugin()
+    ]
+  },
+
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'public/index.html')
@@ -96,5 +104,20 @@ module.exports = {
       __VUE_OPTIONS_API__: false,
       __VUE_PROD_DEVTOOLS__: false,
     }),
+
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, './public'),
+          to: path.resolve(__dirname, './dist'),
+          globOptions: {
+            dot: true,
+            gitignore: false,
+            // 配置不用copy的文件
+            ignore: ['**/index.html']
+          }
+        }
+      ]
+    })
   ]
 }
